@@ -108,6 +108,7 @@ def digitsClassifier(data,gamma=0.001):
 
 data_org = digits.images
 best_gamma=0
+max_accuracy=0
 for gamma in [0.5,0.01,1,0.001,0.0001,0.000005]:
     ans = []
     print(f"for gamma = {gamma}")
