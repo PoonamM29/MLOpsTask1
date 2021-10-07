@@ -24,3 +24,16 @@ def test(clf,X,y):
   acc = metrics.accuracy_score(y_pred=predicted, y_true=y)
   f1 = metrics.f1_score(y_pred=predicted, y_true=y, average="macro")
   return {'acc':acc,'f1':f1}
+
+def run_classification_experiment(clf,X_train,y_train,X_valid,y_valid,gamma,output_model_file,skip_dummy=True):
+    clf.fit(X_train, y_train)
+    metrics_value=test(clf,X_valid,y_valid)
+    if skip_dummy and metrics_value["acc"]<0.11:
+        print("SKipping for {}".format(gamma))
+        return None
+    output_folder = os.path.dirname(output_model_file)
+    if not os.path.isdir(output_folder):
+        os.mkdir(output_folder)
+    dump(clf, output_model_file)
+    return metrics_value
+

@@ -20,7 +20,7 @@ from skimage import data, color
 from skimage.transform import rescale
 import numpy as np
 from joblib import dump, load
-from util import test, preprocess,createsplit
+from util import test, preprocess,createsplit,run_classification_experiment
 
 ###############################################################################
 # Digits dataset
@@ -69,17 +69,22 @@ for test_size, valid_size in [(0.15, 0.15)]:
 
             # Create a classifier: a support vector classifier
             clf = svm.SVC(gamma=gamma)
+            
+            output_folder = "./mymodel_{}_val_{}_rescale_{}_gamma_{}".format(
+                test_size, valid_size, rescale_factor, gamma
+            )
+            output_model_file=os.path.join(output_folder,"model.joblib")
 
             X_train, X_test,X_valid,y_train,y_test,y_valid=createsplit(data,digits.target,test_size,valid_size)
 
             # print("Number of samples: Train:Valid:Test = {}:{}:{}".format(len(y_train),len(y_valid),len(y_test)))
+            metrics_value=run_classification_experiment(clf,X_train,y_train,X_valid,y_valid,gamma,output_model_file)
 
             # Learn the digits on the train subset
-            clf.fit(X_train, y_train)
-            metrics_value=test(clf,X_valid,y_valid)
+            #print(metrics_value)
             
             # we will ensure to throw away some of the models that yield random-like performance.
-            if metrics_value['acc'] < 0.11:
+            if metrics_value==None:
                 continue
 
             candidate = {
@@ -88,11 +93,9 @@ for test_size, valid_size in [(0.15, 0.15)]:
                 "gamma": gamma,
             }
             model_candidates.append(candidate)
-            output_folder = "./mymodel_{}_val_{}_rescale_{}_gamma_{}".format(
-                test_size, valid_size, rescale_factor, gamma
-            )
-            os.mkdir(output_folder)
-            dump(clf, os.path.join(output_folder,"model.joblib"))
+            
+            #os.mkdir(output_folder)
+            #dump(clf, os.path.join(output_folder,"model.joblib"))
 
             
         # Predict the value of the digit on the test subset
