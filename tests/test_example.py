@@ -8,6 +8,38 @@ def test_sqrt():
     assert math.sqrt(num)==5
 
 
+def test_createsplit_9():
+    digits = datasets.load_digits()
+    n_samples = len(digits.images)
+    data = digits.images.reshape((n_samples, -1))
+    rescale_factor=1
+    (test_size, valid_size) =(0.20, 0.10)
+    mydata=data[0:9]
+    mytarget=digits.target[0:9]
+    n_samples=9
+    X_train, X_test,X_valid,y_train,y_test,y_valid=util.createsplit(mydata,mytarget,test_size,valid_size)
+    assert len(X_train)==round(n_samples*(1-(test_size+valid_size)))
+    assert len(X_valid)==round(n_samples*valid_size)
+    assert len(X_test)==round(n_samples*test_size)
+    assert n_samples==len(X_train)+len(X_valid)+len(X_test)
+
+
+def test_createsplit_100():
+    digits = datasets.load_digits()
+    n_samples = len(digits.images)
+    data = digits.images.reshape((n_samples, -1))
+    rescale_factor=1
+    (test_size, valid_size) =(0.20, 0.10)
+    mydata=data[0:100]
+    mytarget=digits.target[0:100]
+    n_samples=100
+    X_train, X_test,X_valid,y_train,y_test,y_valid=util.createsplit(mydata,mytarget,test_size,valid_size)
+    
+    assert len(X_train)+1==round(n_samples*(1-(test_size+valid_size)))
+    assert len(X_valid)-1==round(n_samples*valid_size)
+    assert len(X_test)==round(n_samples*test_size)
+    assert n_samples==len(X_train)+len(X_valid)+len(X_test)
+
 def test_model_writing():
     digits = datasets.load_digits()
     n_samples = len(digits.images)
