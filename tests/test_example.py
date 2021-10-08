@@ -3,6 +3,7 @@ import mlOpstask1.util as util
 import os
 from sklearn import datasets, svm, metrics
 from sklearn.model_selection import train_test_split
+from joblib import dump, load
 def test_sqrt():
     num=25
     assert math.sqrt(num)==5
@@ -23,6 +24,11 @@ def test_createsplit_9():
     assert len(X_test)==round(n_samples*test_size)
     assert n_samples==len(X_train)+len(X_valid)+len(X_test)
 
+    assert len(y_train)==round(n_samples*(1-(test_size+valid_size)))
+    assert len(y_valid)==round(n_samples*valid_size)
+    assert len(y_test)==round(n_samples*test_size)
+    assert n_samples==len(y_train)+len(y_valid)+len(y_test)
+
 
 def test_createsplit_100():
     digits = datasets.load_digits()
@@ -40,16 +46,32 @@ def test_createsplit_100():
     assert len(X_test)==round(n_samples*test_size)
     assert n_samples==len(X_train)+len(X_valid)+len(X_test)
 
+    assert len(y_train)+1==round(n_samples*(1-(test_size+valid_size)))
+    assert len(y_valid)-1==round(n_samples*valid_size)
+    assert len(y_test)==round(n_samples*test_size)
+    assert n_samples==len(y_train)+len(y_valid)+len(y_test)
+
+def test_model_corrupt():
+    (test_size, valid_size) =(0.15, 0.15)
+    rescale_factor=1
+    gamma = 0.001
+    output_folder="./mymodel_{}_val_{}_rescale_{}_gamma_{}".format(
+                test_size, valid_size, rescale_factor, gamma
+            )
+    output_model_file=os.path.join(output_folder,"model.joblib")
+    model = load(output_model_file)
+    assert model
+
 def test_model_writing():
     digits = datasets.load_digits()
     n_samples = len(digits.images)
     data = digits.images.reshape((n_samples, -1))
     rescale_factor=1
+    gamma=0.001
     (test_size, valid_size) =(0.15, 0.15)
 
     X_train, X_test,X_valid,y_train,y_test,y_valid=util.createsplit(data,digits.target,test_size,valid_size)
 
-    gamma = 0.001
     classifier = svm.SVC(gamma=gamma)
     output_folder="./mymodel_{}_val_{}_rescale_{}_gamma_{}".format(
                 test_size, valid_size, rescale_factor, gamma
