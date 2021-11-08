@@ -2,3 +2,5 @@ matplotlib
 scikit-learn
 scikit-image
 pytest==6.2.5
+flask==2.0.2
+flask-restx==0.5.1
