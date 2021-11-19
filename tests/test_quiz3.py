@@ -1,83 +1,176 @@
-import numpy as np
-import math
-import mlOpstask1.util as util
-import os
-from sklearn import datasets, svm, metrics
-from sklearn.model_selection import train_test_split
 from joblib import dump, load
-
-
-def  test_digit_correct_1_gamma():
+from sklearn import datasets
+digits = datasets.load_digits()
+n_samples = len(digits.images)
+data = digits.images.reshape((n_samples, -1))
+targets = digits.target
+def test_digit_correct_0():
     best_model_path='./bestmodelforgamma/model.joblib'
-    clf=load(best_model_path)
-    image= ["0.0","0.0","0.0","11.999999999999982","13.000000000000004","5.000000000000021","8.881784197001265e-15","0.0","0.0","0.0","0.0","10.999999999999986","15.999999999999988","9.000000000000005","1.598721155460224e-14","0.0","0.0","0.0","2.9999999999999925","14.999999999999979","15.999999999999998","6.000000000000022","1.0658141036401509e-14","0.0","6.217248937900871e-15","6.999999999999987","14.99999999999998","15.999999999999996","16.0","2.0000000000000284","3.552713678800507e-15","0.0","5.5220263365470826e-30","6.21724893790087e-15","1.0000000000000113","15.99999999999998","16.0","3.000000000000022","5.32907051820075e-15","0.0","0.0","0.0","0.9999999999999989","15.99999999999998","16.0","6.000000000000015","1.0658141036401498e-14","0.0","0.0","0.0","0.9999999999999989","15.99999999999998","16.0","6.000000000000018","1.0658141036401503e-14","0.0","0.0","0.0","0.0","10.999999999999986","15.999999999999993","10.00000000000001","1.7763568394002505e-14","0.0"]
-    image=np.array(image).reshape(1,-1)
-    predicted=clf.predict(image)
-    assert predicted==1
-
-
-def  test_digit_correct_1_depth():
+    svmmodel=load(best_model_path)
     best_model_path='./bestmodelfordepth/model.joblib'
-    clf=load(best_model_path)
-    image= ["0.0","0.0","0.0","11.999999999999982","13.000000000000004","5.000000000000021","8.881784197001265e-15","0.0","0.0","0.0","0.0","10.999999999999986","15.999999999999988","9.000000000000005","1.598721155460224e-14","0.0","0.0","0.0","2.9999999999999925","14.999999999999979","15.999999999999998","6.000000000000022","1.0658141036401509e-14","0.0","6.217248937900871e-15","6.999999999999987","14.99999999999998","15.999999999999996","16.0","2.0000000000000284","3.552713678800507e-15","0.0","5.5220263365470826e-30","6.21724893790087e-15","1.0000000000000113","15.99999999999998","16.0","3.000000000000022","5.32907051820075e-15","0.0","0.0","0.0","0.9999999999999989","15.99999999999998","16.0","6.000000000000015","1.0658141036401498e-14","0.0","0.0","0.0","0.9999999999999989","15.99999999999998","16.0","6.000000000000018","1.0658141036401503e-14","0.0","0.0","0.0","0.0","10.999999999999986","15.999999999999993","10.00000000000001","1.7763568394002505e-14","0.0"]
-    image=np.array(image).reshape(1,-1)
-    predicted=clf.predict(image)
-    assert predicted==1
+    depthmodel=load(best_model_path)
+    i=0
+    while targets[i] != 0:
+        i+=1
+    
+    image=data[i].reshape(1,-1)
+    predictedsvm=svmmodel.predict(image)
+    predicteddepth=depthmodel.predict(image)
 
+    assert predictedsvm==0
+    assert predicteddepth==0
 
-def  test_digit_correct_4_gamma():
+def test_digit_correct_1():
     best_model_path='./bestmodelforgamma/model.joblib'
-    clf=load(best_model_path)
-    image= ["0.0","0.0","0.0","2.000000000000008","12.99999999999999","2.3092638912203262e-14","0.0","0.0","0.0","0.0","0.0","7.99999999999998","14.999999999999988","2.664535259100375e-14","0.0","0.0","0.0","0.0","4.9999999999999885","15.999999999999975","5.000000000000027","2.0000000000000027","3.552713678800496e-15","0.0","0.0","0.0","14.999999999999975","12.000000000000007","1.0000000000000182","15.999999999999961","4.000000000000018","7.1054273576009955e-15","3.5527136788004978e-15","3.9999999999999925","15.999999999999984","2.0000000000000275","8.999999999999984","15.999999999999988","8.00000000000001","1.4210854715201997e-14","3.1554436208840472e-30","3.5527136788004974e-15","9.999999999999995","13.999999999999986","15.99999999999999","16.0","4.000000000000025","7.105427357601008e-15","0.0","0.0","0.0","0.0","12.999999999999982","8.000000000000009","1.4210854715202004e-14","0.0","0.0","0.0","0.0","0.0","12.999999999999982","6.000000000000012","1.0658141036401503e-14","0.0"]
-    image=np.array(image).reshape(1,-1)
-    predicted=clf.predict(image)
-    assert predicted==4
-
-
-
-def  test_digit_correct_4_depth():
+    svmmodel=load(best_model_path)
     best_model_path='./bestmodelfordepth/model.joblib'
-    clf=load(best_model_path)
-    image= ["0.0","0.0","0.0","2.000000000000008","12.99999999999999","2.3092638912203262e-14","0.0","0.0","0.0","0.0","0.0","7.99999999999998","14.999999999999988","2.664535259100375e-14","0.0","0.0","0.0","0.0","4.9999999999999885","15.999999999999975","5.000000000000027","2.0000000000000027","3.552713678800496e-15","0.0","0.0","0.0","14.999999999999975","12.000000000000007","1.0000000000000182","15.999999999999961","4.000000000000018","7.1054273576009955e-15","3.5527136788004978e-15","3.9999999999999925","15.999999999999984","2.0000000000000275","8.999999999999984","15.999999999999988","8.00000000000001","1.4210854715201997e-14","3.1554436208840472e-30","3.5527136788004974e-15","9.999999999999995","13.999999999999986","15.99999999999999","16.0","4.000000000000025","7.105427357601008e-15","0.0","0.0","0.0","0.0","12.999999999999982","8.000000000000009","1.4210854715202004e-14","0.0","0.0","0.0","0.0","0.0","12.999999999999982","6.000000000000012","1.0658141036401503e-14","0.0"]
-    image=np.array(image).reshape(1,-1)
-    predicted=clf.predict(image)
-    assert predicted==4
+    depthmodel=load(best_model_path)
+    i=0
+    while targets[i]!=1:
+        i+=1
+    
+    image=data[i].reshape(1,-1)
+    predictedsvm=svmmodel.predict(image)
+    predicteddepth=depthmodel.predict(image)
 
+    assert predictedsvm==1
+    assert predicteddepth==1
 
-def  test_digit_correct_8_gamma():
+def test_digit_correct_2():
     best_model_path='./bestmodelforgamma/model.joblib'
-    clf=load(best_model_path)
-    image= ["1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0",      "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","4.0","1.0","2.0","3.0","4.0","1.0","2.0"]
-    image=np.array(image).reshape(1,-1)
-    predicted=clf.predict(image)
-    assert predicted==8
-
-
-
-def  test_digit_correct_2_depth():
+    svmmodel=load(best_model_path)
     best_model_path='./bestmodelfordepth/model.joblib'
-    clf=load(best_model_path)
-    image= ["1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0",      "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","1.0", "2.0", "3.0","4.0","1.0","2.0","3.0","4.0","1.0","2.0"]
-    image=np.array(image).reshape(1,-1)
-    predicted=clf.predict(image)
-    assert predicted==2
+    depthmodel=load(best_model_path)
+    i=0
+    while targets[i]!=2:
+        i+=1
+    
+    image=data[i].reshape(1,-1)
+    predictedsvm=svmmodel.predict(image)
+    predicteddepth=depthmodel.predict(image)
+
+    assert predictedsvm==2
+    assert predicteddepth==2
+
+
+def test_digit_correct_3():
+    best_model_path='./bestmodelforgamma/model.joblib'
+    svmmodel=load(best_model_path)
+    best_model_path='./bestmodelfordepth/model.joblib'
+    depthmodel=load(best_model_path)
+    i=0
+    while targets[i]!=3:
+        i+=1
+    
+    image=data[i].reshape(1,-1)
+    predictedsvm=svmmodel.predict(image)
+    predicteddepth=depthmodel.predict(image)
+
+    assert predictedsvm==3
+    assert predicteddepth==3
 
 
 
+def test_digit_correct_4():
+    best_model_path='./bestmodelforgamma/model.joblib'
+    svmmodel=load(best_model_path)
+    best_model_path='./bestmodelfordepth/model.joblib'
+    depthmodel=load(best_model_path)
+    i=0
+    while targets[i]!=4:
+        i+=1
+    
+    image=data[i].reshape(1,-1)
+    predictedsvm=svmmodel.predict(image)
+    predicteddepth=depthmodel.predict(image)
+
+    assert predictedsvm==4
+    assert predicteddepth==4
 
 
 
+def test_digit_correct_5():
+    best_model_path='./bestmodelforgamma/model.joblib'
+    svmmodel=load(best_model_path)
+    best_model_path='./bestmodelfordepth/model.joblib'
+    depthmodel=load(best_model_path)
+    i=0
+    while targets[i]!=5:
+        i+=1
+    
+    image=data[i].reshape(1,-1)
+    predictedsvm=svmmodel.predict(image)
+    predicteddepth=depthmodel.predict(image)
+
+    assert predictedsvm==5
+    assert predicteddepth==5
+
+
+def test_digit_correct_6():
+    best_model_path='./bestmodelforgamma/model.joblib'
+    svmmodel=load(best_model_path)
+    best_model_path='./bestmodelfordepth/model.joblib'
+    depthmodel=load(best_model_path)
+    i=0
+    while targets[i]!=6:
+        i+=1
+    
+    image=data[i].reshape(1,-1)
+    predictedsvm=svmmodel.predict(image)
+    predicteddepth=depthmodel.predict(image)
+
+    assert predictedsvm==6
+    assert predicteddepth==6
+
+
+def test_digit_correct_7():
+    best_model_path='./bestmodelforgamma/model.joblib'
+    svmmodel=load(best_model_path)
+    best_model_path='./bestmodelfordepth/model.joblib'
+    depthmodel=load(best_model_path)
+    i=0
+    while targets[i]!=7:
+        i+=1
+    
+    image=data[i].reshape(1,-1)
+    predictedsvm=svmmodel.predict(image)
+    predicteddepth=depthmodel.predict(image)
+
+    assert predictedsvm==7
+    assert predicteddepth==7
+
+
+def test_digit_correct_8():
+    best_model_path='./bestmodelforgamma/model.joblib'
+    svmmodel=load(best_model_path)
+    best_model_path='./bestmodelfordepth/model.joblib'
+    depthmodel=load(best_model_path)
+    i=0
+    while targets[i]!=8:
+        i+=1
+    
+    image=data[i].reshape(1,-1)
+    predictedsvm=svmmodel.predict(image)
+    predicteddepth=depthmodel.predict(image)
+
+    assert predictedsvm==8
+    assert predicteddepth==8
 
 
 
+def test_digit_correct_9():
+    best_model_path='./bestmodelforgamma/model.joblib'
+    svmmodel=load(best_model_path)
+    best_model_path='./bestmodelfordepth/model.joblib'
+    depthmodel=load(best_model_path)
+    i=0
+    while targets[i]!=9:
+        i+=1
+    
+    image=data[i].reshape(1,-1)
+    predictedsvm=svmmodel.predict(image)
+    predicteddepth=depthmodel.predict(image)
 
-
-
-
-
-
-
-
-
-
+    assert predictedsvm==9
+    assert predicteddepth==9
 
