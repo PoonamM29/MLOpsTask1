@@ -16,9 +16,6 @@ digits = datasets.load_digits()
 n_samples = len(digits.images)
 data = digits.images.reshape((n_samples, -1))
 
-gammas = [1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 0.1, 1, 10, 100]
-Cs = [0.1,0.5,1,1.5]
-
 param_grid = {'C': [0.1, 10],
               'gamma': [1, 0.01],
               'kernel': ['linear', 'poly']}
