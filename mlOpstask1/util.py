@@ -19,6 +19,13 @@ def createsplit(data,targets,test_size,valid_size):
   X_test, X_valid, y_test, y_valid = train_test_split(X_test_valid,y_test_valid,test_size=valid_size / (test_size + valid_size),shuffle=False)
   return X_train, X_test,X_valid,y_train,y_test,y_valid
 
+
+def createsplitwithsuffle(data,targets,test_size,valid_size):
+  X_train, X_test_valid, y_train, y_test_valid = train_test_split(data, targets, test_size=test_size + valid_size, shuffle=True)
+  X_test, X_valid, y_test, y_valid = train_test_split(X_test_valid,y_test_valid,test_size=valid_size / (test_size + valid_size),shuffle=True)
+  return X_train, X_test,X_valid,y_train,y_test,y_valid
+
+
 def test(clf,X,y):
   predicted = clf.predict(X)
   acc = metrics.accuracy_score(y_pred=predicted, y_true=y)
@@ -37,3 +44,11 @@ def run_classification_experiment(clf,X_train,y_train,X_valid,y_valid,gamma,outp
     dump(clf, output_model_file)
     return metrics_value
 
+
+def mytrain(clf,x_train,y_train,x_test, y_test,x_val, y_val):
+  clf.fit(x_train, y_train)
+  t_ac = clf.score(x_test, y_test)
+  val_ac = clf.score(x_val, y_val)
+  predicted = clf.predict(x_test)
+  f1 = metrics.f1_score(y_pred=predicted,y_true=y_test, average='macro')
+  return t_ac,val_ac,predicted,f1
